@@ -1,35 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
+function TopBar() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <header>
+      <div className="top-bar">Negotiation Trainer</div>
+    </header>
+  );
 }
 
-export default App
+function ChatPage() {
+  return (
+    <>
+      <div className="chat-page">
+        <div className="message-window"></div>
+
+        <div className="send-window">
+          <form>
+            <input></input>
+            <button type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <TopBar />
+      <ChatPage />
+    </>
+  );
+}
