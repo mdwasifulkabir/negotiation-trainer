@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import {} from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -22,7 +22,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-connectAuthEmulator(auth);
+const firestore = getFirestore();
+//connectAuthEmulator(auth);
 
 function TopBar() {
   return (
@@ -33,6 +34,8 @@ function TopBar() {
 }
 
 function ChatPage() {
+  const messagesRef = fire;
+
   return (
     <>
       <div className="chat-page">
@@ -55,6 +58,12 @@ function SignIn() {
     signInWithPopup(auth, provider);
   };
   return <button onClick={googleSignIn}>Sign In With Google</button>;
+}
+
+function SignOut() {
+  return (
+    auth.currentUser && <button onClick={() => auth.signOut()}>SignOut</button>
+  );
 }
 
 export default function App() {
