@@ -43,7 +43,7 @@ function ChatPage() {
   const messagesRef = collection(firestore, "messages");
   const q = query(messagesRef, orderBy("createdAt", "desc"), limit(25));
 
-  const [messages] = useCollectionData(query, { idField: "id" });
+  const [messages] = useCollectionData(q, { idField: "id" });
   return (
     <>
       <div className="chat-page">
@@ -62,9 +62,16 @@ function ChatPage() {
 }
 
 function ChatMessage(props) {
-  const { text, uid } = props.message;
+  const { text, uid, photoURL } = props.message;
 
-  return <p>{text}</p>;
+  const messageClass = uid === auth.currentUser.uid ? "user" : "other";
+
+  return (
+    <div className={`message ${messageClass}`}>
+      <img src={photoURL} />
+      <p>{text}</p>
+    </div>
+  );
 }
 
 function SignIn() {
