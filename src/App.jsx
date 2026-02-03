@@ -6,6 +6,7 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
+
 import {
   getAuth,
   GoogleAuthProvider,
@@ -13,6 +14,7 @@ import {
   connectAuthEmulator,
 } from "firebase/auth";
 
+import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
@@ -44,6 +46,9 @@ function ChatPage() {
   const q = query(messagesRef, orderBy("createdAt", "desc"), limit(25));
 
   const [messages] = useCollectionData(q, { idField: "id" });
+
+  const [formValue, setFormValue] = useState("");
+
   return (
     <>
       <div className="chat-page">
@@ -52,7 +57,10 @@ function ChatPage() {
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
         <div className="send-window">
           <form>
-            <input></input>
+            <input
+              value={formValue}
+              onChange={(e) => setFormValue(e.target.value)}
+            ></input>
             <button type="submit">Send</button>
           </form>
         </div>
