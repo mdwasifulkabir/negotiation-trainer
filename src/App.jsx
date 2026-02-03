@@ -1,5 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  query,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -22,7 +28,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-const firestore = getFirestore();
+const firestore = getFirestore(app);
 //connectAuthEmulator(auth);
 
 function TopBar() {
@@ -34,13 +40,16 @@ function TopBar() {
 }
 
 function ChatPage() {
-  const messagesRef = fire;
+  const messagesRef = collection(firestore, "messages");
+  const q = query(messagesRef, orderBy("createdAt", "desc"), limit(25));
 
+  const [messages] = useCollectionData(query, { idField: "id" });
   return (
     <>
       <div className="chat-page">
         <div className="message-window"></div>
-
+        {messages &&
+          messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
         <div className="send-window">
           <form>
             <input></input>
@@ -50,6 +59,12 @@ function ChatPage() {
       </div>
     </>
   );
+}
+
+function ChatMessage(props) {
+  const { text, uid } = props.message;
+
+  return <p>{text}</p>;
 }
 
 function SignIn() {
