@@ -5,13 +5,15 @@ import {
   query,
   orderBy,
   limit,
+  addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  connectAuthEmulator,
+  //connectAuthEmulator,
 } from "firebase/auth";
 
 import { useState } from "react";
@@ -49,6 +51,21 @@ function ChatPage() {
 
   const [formValue, setFormValue] = useState("");
 
+  const sendMessage = async (e) => {
+    e.preventDefault();
+
+    const { uid, photoURL } = auth.currentUser;
+
+    await addDoc(messagesRef, {
+      text: formValue,
+      createdAt: serverTimestamp(),
+      uid,
+      photoURL,
+    });
+
+    setFormValue("");
+  };
+
   return (
     <>
       <div className="chat-page">
@@ -56,7 +73,7 @@ function ChatPage() {
         {messages &&
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
         <div className="send-window">
-          <form>
+          <form onSubmit={sendMessage}>
             <input
               value={formValue}
               onChange={(e) => setFormValue(e.target.value)}
