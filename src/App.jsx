@@ -47,7 +47,7 @@ function ChatPage() {
   const dummy = useRef();
 
   const messagesRef = collection(firestore, "messages");
-  const q = query(messagesRef, orderBy("createdAt", "desc"), limit(25));
+  const q = query(messagesRef, orderBy("createdAt", "asc"), limit(25));
 
   const [messages] = useCollectionData(q, { idField: "id" });
 
@@ -97,8 +97,8 @@ function ChatMessage(props) {
 
   return (
     <div className={`message ${messageClass}`}>
-      <img src={photoURL} alt="User Avatar" />
       <p>{text}</p>
+      <img src={photoURL} alt="User Avatar" />
     </div>
   );
 }
