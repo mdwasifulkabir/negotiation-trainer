@@ -16,7 +16,7 @@ import {
   //connectAuthEmulator,
 } from "firebase/auth";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
@@ -44,6 +44,8 @@ function TopBar() {
 }
 
 function ChatPage() {
+  const dummy = useRef();
+
   const messagesRef = collection(firestore, "messages");
   const q = query(messagesRef, orderBy("createdAt", "desc"), limit(25));
 
@@ -64,6 +66,7 @@ function ChatPage() {
     });
 
     setFormValue("");
+    dummy.current.scrollIntoView({ behaviour: "smooth" });
   };
 
   return (
@@ -72,6 +75,7 @@ function ChatPage() {
         <div className="message-window"></div>
         {messages &&
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
+        <div ref={dummy}></div>
         <div className="send-window">
           <form onSubmit={sendMessage}>
             <input
@@ -93,7 +97,7 @@ function ChatMessage(props) {
 
   return (
     <div className={`message ${messageClass}`}>
-      <img src={photoURL} />
+      <img src={photoURL} alt="User Avatar" />
       <p>{text}</p>
     </div>
   );
