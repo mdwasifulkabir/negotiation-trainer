@@ -16,7 +16,7 @@ import {
   //connectAuthEmulator,
 } from "firebase/auth";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
@@ -93,8 +93,8 @@ function ChatMessage(props) {
 
   return (
     <div className={`message ${messageClass}`}>
-      <p>{text}</p>
-      <img src={photoURL} alt="User Avatar" />
+      <p className="text">{text}</p>
+      <img src={photoURL} alt="User Avatar" className="avatar" />
     </div>
   );
 }

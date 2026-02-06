@@ -39,23 +39,30 @@
 
 .message {
   display: flex;
+  gap: 0.2rem;
+  font-size: 1.2rem;
+  align-items: base;
 }
 
-.message > p {
+.user .text {
+  background: linear-gradient(90deg, #3a7bfd, #2b6ee6);
   padding: 12px 14px;
   border-radius: 14px;
   max-width: 65%;
   line-height: 1.35;
   word-wrap: break-word;
   box-shadow: 0 6px 18px rgba(2, 6, 23, 0.5);
-  margin-bottom: 8px;
+  margin-bottom: 1.2rem;
+  color: #ffffff;
 }
 
-.message > img {
+.avatar {
   border-radius: 100px;
+  width: 50px;
+  height: 50px;
 }
 
-.message.other {
+.other .text {
   background: rgba(20, 22, 24, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.9);
@@ -63,8 +70,6 @@
   border-radius: 14px 14px 14px 6px;
 }
 .message.user {
-  background: linear-gradient(90deg, #3a7bfd, #2b6ee6);
-  color: #ffffff;
   align-self: flex-end;
   border-radius: 14px 14px 6px 14px;
 }
