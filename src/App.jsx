@@ -44,8 +44,6 @@ function TopBar() {
 }
 
 function ChatPage() {
-  const dummy = useRef();
-
   const messagesRef = collection(firestore, "messages");
   const q = query(messagesRef, orderBy("createdAt", "asc"), limit(25));
 
@@ -66,7 +64,6 @@ function ChatPage() {
     });
 
     setFormValue("");
-    dummy.current.scrollIntoView({ behaviour: "smooth" });
   };
 
   return (
@@ -75,7 +72,6 @@ function ChatPage() {
         <div className="message-window"></div>
         {messages &&
           messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
-        <div ref={dummy}></div>
         <div className="send-window">
           <form onSubmit={sendMessage}>
             <input

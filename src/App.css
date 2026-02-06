@@ -39,6 +39,9 @@
 
 .message {
   display: flex;
+}
+
+.message > p {
   padding: 12px 14px;
   border-radius: 14px;
   max-width: 65%;
@@ -49,7 +52,7 @@
 }
 
 .message > img {
-  size-adjust: 2rem;
+  border-radius: 100px;
 }
 
 .message.other {
