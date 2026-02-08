@@ -56,7 +56,21 @@ function ChatPage() {
   const sendMessage = async (e) => {
     e.preventDefault();
 
+    if (!formValue.trim()) return;
+
     const { uid, photoURL } = auth.currentUser;
+
+    //Prepare history to pass into gerNegotiationReply for context
+    const lastMessages = messages.slice(-5).map((m) => ({
+      role: m.role === "user" ? "user" : "model",
+      text: m.text,
+    }));
+
+    //add the latest user message as well
+    lastMessages.push({
+      role: "user",
+      text: formValue,
+    });
 
     await addDoc(messagesRef, {
       text: formValue,
@@ -67,6 +81,14 @@ function ChatPage() {
     });
 
     setFormValue("");
+
+    const aiReply = await getNegotiationReply(lastMessages);
+
+    await addDoc(messagesRef, {
+      text: aiReply,
+      createdAt: serverTimestamp(),
+      role: "model",
+    });
   };
 
   return (
