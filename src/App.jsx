@@ -20,6 +20,8 @@ import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
+import { getNegotiationReply } from "./ai";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCZ4SNMLM0RajxvoXdkH3NgT2frn3CHIb0",
   authDomain: "negotiation-trainer-4535e.firebaseapp.com",
@@ -61,6 +63,7 @@ function ChatPage() {
       createdAt: serverTimestamp(),
       uid,
       photoURL,
+      role: "user",
     });
 
     setFormValue("");
