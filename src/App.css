@@ -42,6 +42,7 @@
   gap: 0.6rem;
   font-size: 1.2rem;
   align-items: flex-end;
+  justify-content: flex-end;
 }
 
 .text {
@@ -53,17 +54,13 @@
   box-shadow: 0 6px 18px rgba(2, 6, 23, 0.5);
 }
 
-.message.user {
-  justify-content: flex-end;
-}
-
 .message.user .text {
   background: linear-gradient(90deg, #3a7bfd, #2b6ee6);
   color: #ffffff;
 }
 
-.message.model .text {
-  justify-content: flex-start;
+.message.model {
+  flex-direction: row-reverse;
 }
 
 .message.model .text {
