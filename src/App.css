@@ -39,21 +39,36 @@
 
 .message {
   display: flex;
-  gap: 0.2rem;
+  gap: 0.6rem;
   font-size: 1.2rem;
-  align-items: base;
+  align-items: flex-end;
 }
 
-.user .text {
-  background: linear-gradient(90deg, #3a7bfd, #2b6ee6);
+.text {
   padding: 12px 14px;
   border-radius: 14px;
   max-width: 65%;
   line-height: 1.35;
   word-wrap: break-word;
   box-shadow: 0 6px 18px rgba(2, 6, 23, 0.5);
-  margin-bottom: 1.2rem;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.user .text {
+  background: linear-gradient(90deg, #3a7bfd, #2b6ee6);
   color: #ffffff;
+}
+
+.message.model .text {
+  justify-content: flex-start;
+}
+
+.message.model .text {
+  background: rgba(20, 22, 24, 0.8);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .avatar {
