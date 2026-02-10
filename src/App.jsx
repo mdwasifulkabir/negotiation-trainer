@@ -16,7 +16,7 @@ import {
   //connectAuthEmulator,
 } from "firebase/auth";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
@@ -50,8 +50,13 @@ function ChatPage() {
   const q = query(messagesRef, orderBy("createdAt", "asc"), limit(25));
 
   const [messages] = useCollectionData(q, { idField: "id" });
+  const dummy = useRef();
 
   const [formValue, setFormValue] = useState("");
+
+  useEffect(() => {
+    dummy.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -82,21 +87,23 @@ function ChatPage() {
 
     setFormValue("");
 
-    const aiReply = await getNegotiationReply(lastMessages);
+    //const aiReply = await getNegotiationReply(lastMessages);
 
-    await addDoc(messagesRef, {
+    /*await addDoc(messagesRef, {
       text: aiReply,
       createdAt: serverTimestamp(),
       role: "model",
-    });
+    });*/
   };
 
   return (
     <>
       <div className="chat-page">
-        <div className="message-window"></div>
-        {messages &&
-          messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
+        <div className="message-window">
+          {messages &&
+            messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
+          <div ref={dummy}></div>
+        </div>
         <div className="send-window">
           <form onSubmit={sendMessage}>
             <input

@@ -2,7 +2,9 @@
 import { GoogleGenAI } from "@google/genai";
 
 // Create AI client
-const ai = new GoogleGenAI({});
+const ai = new GoogleGenAI({
+  apiKey: import.meta.env.VITE_API_KEY,
+});
 
 // Export a function that the app can call
 export async function getNegotiationReply(history) {
@@ -20,16 +22,16 @@ export async function getNegotiationReply(history) {
     parts: [
       {
         text: `
-You are an AI negotiation trainer.
+          You are an AI negotiation trainer.
 
-Your job:
-1. Roleplay as the negotiation partner.
-2. After replying, give coaching feedback:
-   - What the user did well
-   - What they should improve
-   - One actionable tip
+          Your job:
+          1. Roleplay as the negotiation partner.
+          2. After replying, give coaching feedback:
+            - What the user did well
+            - What they should improve
+            - One actionable tip
 
-Keep replies realistic, concise, and helpful.
+          Keep replies realistic, concise, and helpful.
         `,
       },
     ],
