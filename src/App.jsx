@@ -121,7 +121,7 @@ function ChatPage() {
 function ChatMessage(props) {
   const { text, uid, photoURL } = props.message;
 
-  const messageClass = uid === auth.currentUser.uid ? "user" : "other";
+  const messageClass = uid === auth.currentUser.uid ? "user" : "model";
 
   return (
     <div className={`message ${messageClass}`}>
