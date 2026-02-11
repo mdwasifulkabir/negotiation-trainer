@@ -19,6 +19,11 @@ body {
   --accent: #6b7bff;
 }
 
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
 code {
   font-family:
     source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;

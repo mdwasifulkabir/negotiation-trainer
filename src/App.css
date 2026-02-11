@@ -1,13 +1,17 @@
 .app-shell {
   height: 100vh;
   overflow-y: auto;
+  background: var(--bg-primary);
 }
 
 /* Top navigation */
-.top-bar {
+header {
   position: sticky;
   top: 0;
   z-index: 20;
+}
+
+.top-bar {
   width: 100%;
   box-sizing: border-box;
   padding: 16px 24px;
@@ -104,12 +108,7 @@
   box-sizing: border-box;
   padding: 16px min(7vw, 96px) 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  background: linear-gradient(
-    180deg,
-    rgba(8, 10, 12, 0.75),
-    rgba(8, 10, 12, 0.95)
-  );
-  backdrop-filter: blur(8px);
+  background: var(--bg-primary);
 }
 
 .send-window form {
