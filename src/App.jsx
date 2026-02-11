@@ -154,9 +154,9 @@ function SignOut() {
 export default function App() {
   const [user] = useAuthState(auth);
   return (
-    <>
+    <div className="app-shell">
       <TopBar />
       <section>{user ? <ChatPage /> : <SignIn />}</section>
-    </>
+    </div>
   );
 }
