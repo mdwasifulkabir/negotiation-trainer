@@ -1,1 +1,3 @@
-[] resolve scrolling problem (el.scrollTo and dummyRef.scrollIntoView)
+[x] resolve scrolling problem (el.scrollTo and dummyRef.scrollIntoView)
+[] Add sessions
+[] Add speech to text

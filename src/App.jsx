@@ -17,6 +17,8 @@ import {
 } from "firebase/auth";
 
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
@@ -125,8 +127,12 @@ function ChatMessage(props) {
 
   return (
     <div className={`message ${messageClass}`}>
-      <p className="text">{text}</p>
-      <img src={photoURL} alt="User Avatar" className="avatar" />
+      <ReactMarkdown remarkPlugins={[remarkGfm]} className="text markdown">
+        {text}
+      </ReactMarkdown>
+      {messageClass === "user" && (
+        <img src={photoURL} alt="User Avatar" className="avatar" />
+      )}
     </div>
   );
 }
