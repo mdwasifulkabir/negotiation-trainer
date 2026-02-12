@@ -47,6 +47,16 @@ function TopBar() {
   );
 }
 
+async function createSession() {
+  const sessionRef = await addDoc(collection(firestore, "sessions"), {
+    uid: auth.currentUser.uid,
+    title: "Salary Negotiation Practice",
+    createdAt: serverTimestamp(),
+  });
+
+  return sessionRef.id;
+}
+
 function ChatPage() {
   const messagesRef = collection(firestore, "messages");
   const q = query(messagesRef, orderBy("createdAt", "asc"), limit(25));
