@@ -3,6 +3,7 @@ import {
   getFirestore,
   collection,
   query,
+  where,
   orderBy,
   limit,
   addDoc,
@@ -58,31 +59,30 @@ async function createSession() {
 }
 
 function ChatOpening() {
-  return (
-    <h1 className="opening-text">Ready to negotiate?</h1>
-  )
+  return <h1 className="opening-text">Ready to negotiate?</h1>;
 }
 
 function Sidebar() {
+  const [sessionId, setSessionId] = useState(null);
+
   const sessionsRef = collection(firestore, "sessions");
 
   const sessionsQuery = query(
     sessionsRef,
     where("uid", "==", auth.currentUser.uid),
-    orderBy("createdAt", "desc")
+    orderBy("createdAt", "desc"),
   );
 
   const [sessions] = useCollectionData(sessionsQuery);
   return (
     <div className="sidebar">
       <button>New Chat</button>
+      key={s.id}
       {sessions?.map((s) => (
-        <button onClick={(setSessionId(s.id))}>
-          {s.title}
-        </button>
+        <button onClick={setSessionId(s.id)}>{s.title}</button>
       ))}
-    </div
-  )
+    </div>
+  );
 }
 
 function ChatPage() {
@@ -120,6 +120,7 @@ function ChatPage() {
     await addDoc(messagesRef, {
       text: formValue,
       createdAt: serverTimestamp(),
+      sessionId: sessionId,
       uid,
       photoURL,
       role: "user",
