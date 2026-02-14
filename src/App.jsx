@@ -57,6 +57,34 @@ async function createSession() {
   return sessionRef.id;
 }
 
+function ChatOpening() {
+  return (
+    <h1 className="opening-text">Ready to negotiate?</h1>
+  )
+}
+
+function Sidebar() {
+  const sessionsRef = collection(firestore, "sessions");
+
+  const sessionsQuery = query(
+    sessionsRef,
+    where("uid", "==", auth.currentUser.uid),
+    orderBy("createdAt", "desc")
+  );
+
+  const [sessions] = useCollectionData(sessionsQuery);
+  return (
+    <div className="sidebar">
+      <button>New Chat</button>
+      {sessions?.map((s) => (
+        <button onClick={(setSessionId(s.id))}>
+          {s.title}
+        </button>
+      ))}
+    </div
+  )
+}
+
 function ChatPage() {
   const messagesRef = collection(firestore, "messages");
   const q = query(messagesRef, orderBy("createdAt", "asc"), limit(25));
