@@ -23,8 +23,6 @@ import remarkGfm from "remark-gfm";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
-import { getNegotiationReply } from "./ai";
-
 const firebaseConfig = {
   apiKey: "AIzaSyCZ4SNMLM0RajxvoXdkH3NgT2frn3CHIb0",
   authDomain: "negotiation-trainer-4535e.firebaseapp.com",
@@ -48,9 +46,9 @@ function TopBar() {
   );
 }
 
-async function createSession() {
+async function createSession(uid) {
   const sessionRef = await addDoc(collection(firestore, "sessions"), {
-    uid: auth.currentUser.uid,
+    uid,
     title: "Salary Negotiation Practice",
     createdAt: serverTimestamp(),
   });
@@ -59,54 +57,82 @@ async function createSession() {
 }
 
 function ChatOpening() {
-  return <h1 className="opening-text">Ready to negotiate?</h1>;
+  return (
+    <div className="opening">
+      <h1 className="opening-text">Ready to negotiate?</h1>
+      <p>Select a session or start a new one</p>
+    </div>
+  );
 }
 
-function Sidebar() {
-  const [sessionId, setSessionId] = useState(null);
-
+function Sidebar({ sessionId, setSessionId, uid }) {
   const sessionsRef = collection(firestore, "sessions");
 
-  const sessionsQuery = query(
-    sessionsRef,
-    where("uid", "==", auth.currentUser.uid),
-    orderBy("createdAt", "desc"),
+  const sessionsQuery = query(sessionsRef, where("uid", "==", uid));
+
+  const [sessions, sessionsLoading, sessionsError] = useCollectionData(
+    sessionsQuery,
+    { idField: "id" },
   );
 
-  const [sessions] = useCollectionData(sessionsQuery);
+  const sortedSessions = [...(sessions ?? [])].sort(
+    (a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0),
+  );
+
+  const handleNewChat = async () => {
+    const newId = await createSession(uid);
+    setSessionId(newId);
+  };
+
   return (
     <div className="sidebar">
-      <button>New Chat</button>
-      key={s.id}
-      {sessions?.map((s) => (
-        <button onClick={setSessionId(s.id)}>{s.title}</button>
+      <button onClick={handleNewChat} className="new-chat-btn">
+        New Chat
+      </button>
+
+      {sessionsLoading && <p className="sidebar-meta">Loading sessions...</p>}
+      {sessionsError && <p className="sidebar-meta">Could not load sessions.</p>}
+
+      {sortedSessions.map((s) => (
+        <button
+          key={s.id}
+          onClick={() => setSessionId(s.id)}
+          className={`session-btn ${s.id === sessionId ? "active" : ""}`}
+        >
+          {s.title}
+        </button>
       ))}
     </div>
   );
 }
 
-function ChatPage() {
-  const messagesRef = collection(firestore, "messages");
-  const q = query(messagesRef, orderBy("createdAt", "asc"), limit(25));
+function ChatPage({ user }) {
+  const [sessionId, setSessionId] = useState(null);
+
+  const messagesRef =
+    sessionId && collection(firestore, "sessions", sessionId, "messages");
+  const q =
+    sessionId && query(messagesRef, orderBy("createdAt", "asc"), limit(25));
 
   const [messages] = useCollectionData(q, { idField: "id" });
-  const dummy = useRef();
+  const dummy = useRef(null);
 
   const [formValue, setFormValue] = useState("");
 
   useEffect(() => {
+    if (!sessionId || !dummy.current) return;
     dummy.current.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, sessionId]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
 
     if (!formValue.trim()) return;
 
-    const { uid, photoURL } = auth.currentUser;
+    const { uid, photoURL } = user;
 
     //Prepare history to pass into gerNegotiationReply for context
-    const lastMessages = messages.slice(-5).map((m) => ({
+    const lastMessages = (messages ?? []).slice(-5).map((m) => ({
       role: m.role === "user" ? "user" : "model",
       text: m.text,
     }));
@@ -138,31 +164,44 @@ function ChatPage() {
   };
 
   return (
-    <>
-      <div className="chat-page">
-        <div className="message-window">
-          {messages &&
-            messages.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
-          <div ref={dummy}></div>
-        </div>
-        <div className="send-window">
-          <form onSubmit={sendMessage}>
-            <input
-              value={formValue}
-              onChange={(e) => setFormValue(e.target.value)}
-            ></input>
-            <button type="submit">Send</button>
-          </form>
-        </div>
+    <div className="chat-layout">
+      {/* Sidebar always visible */}
+      <Sidebar sessionId={sessionId} setSessionId={setSessionId} uid={user.uid} />
+
+      {/* Main area */}
+      <div className="chat-main">
+        {!sessionId ? (
+          <ChatOpening />
+        ) : (
+          <>
+            <div className="message-window">
+              {messages?.map((msg) => (
+                <ChatMessage key={msg.id} message={msg} currentUserId={user.uid} />
+              ))}
+              <div ref={dummy}></div>
+            </div>
+
+            <div className="send-window">
+              <form onSubmit={sendMessage}>
+                <input
+                  value={formValue}
+                  onChange={(e) => setFormValue(e.target.value)}
+                />
+                <button type="submit">Send</button>
+              </form>
+            </div>
+          </>
+        )}
       </div>
-    </>
+    </div>
   );
 }
 
 function ChatMessage(props) {
   const { text, uid, photoURL } = props.message;
+  const { currentUserId } = props;
 
-  const messageClass = uid === auth.currentUser.uid ? "user" : "model";
+  const messageClass = uid === currentUserId ? "user" : "model";
 
   return (
     <div className={`message ${messageClass}`}>
@@ -195,7 +234,7 @@ export default function App() {
   return (
     <div className="app-shell">
       <TopBar />
-      <section>{user ? <ChatPage /> : <SignIn />}</section>
+      <section>{user ? <ChatPage user={user} /> : <SignIn />}</section>
     </div>
   );
 }
