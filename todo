@@ -1,3 +1,5 @@
 [x] resolve scrolling problem (el.scrollTo and dummyRef.scrollIntoView)
-[] Add sessions
+[x] Add sessions
+[] Add option to delete sessions
+[] Add auto generate session name
 [] Add speech to text
