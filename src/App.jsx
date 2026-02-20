@@ -23,6 +23,9 @@ import remarkGfm from "remark-gfm";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCZ4SNMLM0RajxvoXdkH3NgT2frn3CHIb0",
   authDomain: "negotiation-trainer-4535e.firebaseapp.com",
@@ -99,16 +102,21 @@ function Sidebar({ sessionId, setSessionId, uid }) {
       )}
 
       {sortedSessions.map((s) => (
-        <button
-          key={s.id}
-          onClick={() => {
-            console.log(s.id);
-            setSessionId(s.id);
-          }}
-          className={`session-btn ${s.id === sessionId ? "active" : ""}`}
-        >
-          {s.title}
-        </button>
+        <div className="sidebar-btn-container">
+          <div
+            key={s.id}
+            onClick={() => {
+              console.log(s.id);
+              setSessionId(s.id);
+            }}
+            className={`session-btn ${s.id === sessionId ? "active" : ""}`}
+          >
+            {s.title}
+          </div>
+          <div onClick={() => console.log("sdasd")}>
+            <FontAwesomeIcon icon={faTrash} />
+          </div>
+        </div>
       ))}
     </div>
   );
