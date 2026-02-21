@@ -21,7 +21,10 @@ import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollection } from "react-firebase-hooks/firestore";
+import {
+  useCollection,
+  useCollectionData,
+} from "react-firebase-hooks/firestore";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -71,7 +74,7 @@ function ChatOpening() {
 function Sidebar({ sessionId, setSessionId, uid }) {
   const sessionsRef = collection(firestore, "sessions");
 
-  const sessionsQuery = query(sessionsRef);
+  const sessionsQuery = query(sessionsRef, where("uid", "==", uid));
 
   const [snapshot, sessionsLoading, sessionsError] =
     useCollection(sessionsQuery);
@@ -102,18 +105,24 @@ function Sidebar({ sessionId, setSessionId, uid }) {
       )}
 
       {sortedSessions.map((s) => (
-        <div className="sidebar-btn-container">
+        <div key={s.id} className="sidebar-btn-container">
           <div
-            key={s.id}
-            onClick={() => {
-              console.log(s.id);
-              setSessionId(s.id);
-            }}
+            type="button"
+            onClick={() => setSessionId(s.id)}
             className={`session-btn ${s.id === sessionId ? "active" : ""}`}
           >
-            {s.title}
+            <span className="session-title">{s.title}</span>
           </div>
-          <div onClick={() => console.log("sdasd")}>
+
+          <div
+            type="button"
+            className="session-trash-btn"
+            aria-label={`Delete ${s.title}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              console.log("delete session", s.id);
+            }}
+          >
             <FontAwesomeIcon icon={faTrash} />
           </div>
         </div>

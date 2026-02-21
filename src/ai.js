@@ -45,3 +45,19 @@ export async function getNegotiationReply(history) {
 
   return response.text;
 }
+
+export async function generateSessionTitle(firstMessage) {
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: `
+      Generate a short 3-5 word title for this negotiation scenario.
+      Do not include quotation marks.
+      Be concise.
+
+      Message:
+      ${firstMessage}
+          `,
+  });
+
+  return response.text.trim();
+}
