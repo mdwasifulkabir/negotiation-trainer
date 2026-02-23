@@ -30,8 +30,11 @@ import {
   useCollectionData,
 } from "react-firebase-hooks/firestore";
 
-import { generateSessionTitle } from "./ai";
-import { getNegotiationReply } from "./ai";
+import {
+  generateSessionTitle,
+  getNegotiationReply,
+  generateScenario,
+} from "./ai";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -215,8 +218,10 @@ function SessionView({ sessionId, user }) {
     });
 
     const isFirstMessage = messages.length === 0;
+    let scenarioGenerated = false;
 
     if (isFirstMessage) {
+      //will setting form value to empty remove the ability to generate title?
       setFormValue("");
       const title = await generateSessionTitle(formValue);
       const docRef = doc(firestore, "sessions", sessionId);
@@ -237,7 +242,12 @@ function SessionView({ sessionId, user }) {
 
     setFormValue("");
 
-    const aiReply = await getNegotiationReply(lastMessages);
+    let aiReply = "";
+    if (scenarioGenerated) {
+      aiReply = await getNegotiationReply(lastMessages);
+    } else {
+      aiReply = await generateScenario(formValue);
+    }
 
     await addDoc(messagesRef, {
       text: aiReply,
