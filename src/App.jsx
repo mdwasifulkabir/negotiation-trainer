@@ -8,6 +8,10 @@ import {
   limit,
   addDoc,
   serverTimestamp,
+  doc,
+  updateDoc,
+  deleteDoc,
+  getDocs,
 } from "firebase/firestore";
 
 import {
@@ -25,6 +29,9 @@ import {
   useCollection,
   useCollectionData,
 } from "react-firebase-hooks/firestore";
+
+import { generateSessionTitle } from "./ai";
+import { getNegotiationReply } from "./ai";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -93,6 +100,22 @@ function Sidebar({ sessionId, setSessionId, uid }) {
     setSessionId(newId);
   };
 
+  async function deleteSession(sessionId) {
+    const messagesRef = collection(
+      firestore,
+      "sessions",
+      sessionId,
+      "messages",
+    );
+
+    const snapshot = await getDocs(messagesRef);
+
+    const deletions = snapshot.docs.map((d) => deleteDoc(d.ref));
+    await Promise.all(deletions);
+
+    await deleteDoc(doc(firestore, "sessions", sessionId));
+  }
+
   return (
     <div className="sidebar">
       <button onClick={handleNewChat} className="new-chat-btn">
@@ -120,7 +143,10 @@ function Sidebar({ sessionId, setSessionId, uid }) {
             aria-label={`Delete ${s.title}`}
             onClick={(e) => {
               e.stopPropagation();
-              console.log("delete session", s.id);
+              deleteSession(s.id);
+              if (sessionId === s.id) {
+                setSessionId(null);
+              }
             }}
           >
             <FontAwesomeIcon icon={faTrash} />
@@ -188,6 +214,18 @@ function SessionView({ sessionId, user }) {
       text: formValue,
     });
 
+    const isFirstMessage = messages.length === 0;
+
+    if (isFirstMessage) {
+      setFormValue("");
+      const title = await generateSessionTitle(formValue);
+      const docRef = doc(firestore, "sessions", sessionId);
+
+      await updateDoc(docRef, {
+        title: title,
+      });
+    }
+
     await addDoc(messagesRef, {
       text: formValue,
       createdAt: serverTimestamp(),
@@ -199,13 +237,13 @@ function SessionView({ sessionId, user }) {
 
     setFormValue("");
 
-    //const aiReply = await getNegotiationReply(lastMessages);
+    const aiReply = await getNegotiationReply(lastMessages);
 
-    /*await addDoc(messagesRef, {
+    await addDoc(messagesRef, {
       text: aiReply,
       createdAt: serverTimestamp(),
       role: "model",
-    });*/
+    });
   };
 
   return (

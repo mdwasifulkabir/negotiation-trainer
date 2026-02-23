@@ -1,5 +1,7 @@
 [x] resolve scrolling problem (el.scrollTo and dummyRef.scrollIntoView)
 [x] Add sessions
 [] Add option to delete sessions
-[] Add auto generate session name
+[x] Add auto generate session name
+[] Freeze send button while generating session name
+[] Add loading animation to session button while generating name
 [] Add speech to text
