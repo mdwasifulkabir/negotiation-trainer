@@ -62,7 +62,7 @@ export async function generateSessionTitle(firstMessage) {
 }
 
 //Generate scenario using first message
-export async function generateScenario(firstMessage) {
+export async function generateScenario(subject) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: `
