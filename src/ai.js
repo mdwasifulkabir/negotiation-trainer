@@ -1,12 +1,10 @@
-// src/ai.js
 import { GoogleGenAI } from "@google/genai";
 
-// Create AI client
+// create AI client
 const ai = new GoogleGenAI({
   apiKey: import.meta.env.VITE_API_KEY,
 });
 
-// Export a function that the app can call
 export async function getNegotiationReply(history) {
   const model = "gemini-2.5-flash";
 
@@ -46,6 +44,7 @@ export async function getNegotiationReply(history) {
   return response.text;
 }
 
+//Generate session title
 export async function generateSessionTitle(firstMessage) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
@@ -57,6 +56,31 @@ export async function generateSessionTitle(firstMessage) {
       Message:
       ${firstMessage}
           `,
+  });
+
+  return response.text.trim();
+}
+
+//Generate scenario using first message
+export async function generateScenario(firstMessage) {
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: `
+    You are a negotiation roleplay generator.
+
+    The user provides a subject for negotiation.
+
+    Generate:
+    1. A realistic negotiation scenario
+    2. Background context about the user
+    3. Any relevant details to make the negotiation realistic
+
+    Do not negotiate yet.
+    Only set up the scenario.
+
+    Subject:
+    ${subject}
+    `,
   });
 
   return response.text.trim();
