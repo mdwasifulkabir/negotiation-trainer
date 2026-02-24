@@ -66,21 +66,64 @@ export async function generateScenario(subject) {
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: `
-    You are a negotiation roleplay generator.
+      You are a negotiation roleplay generator.
 
-    The user provides a subject for negotiation.
+      The user provides a subject for negotiation.
 
-    Generate:
-    1. A realistic negotiation scenario
-    2. Background context about the user
-    3. Any relevant details to make the negotiation realistic
+      Generate:
+      1. A realistic negotiation scenario
+      2. Background context about the user
+      3. Any relevant details to make the negotiation realistic
 
-    Do not negotiate yet.
-    Only set up the scenario.
+      Do not negotiate yet.
+      Only set up the scenario.
 
-    Subject:
-    ${subject}
+      Subject:
+      ${subject}
     `,
+  });
+
+  return response.text.trim();
+}
+export async function generateFeedback(conversation) {
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: `
+    You are an expert negotiation coach.
+
+    Analyze the following negotiation conversation.
+
+    Provide:
+
+    1. Overall performance summary
+    2. Strengths
+    3. Weaknesses
+    4. Actionable improvements
+    5. Skill ratings (0-10 scale) for:
+      - Confidence
+      - Anchoring
+      - Persuasion
+      - Emotional Intelligence
+      - Preparation
+
+    Return the response in this exact JSON format:
+
+    {
+      "summary": "",
+      "strengths": [],
+      "weaknesses": [],
+      "improvements": [],
+      "ratings": {
+        "confidence": 0,
+        "anchoring": 0,
+        "persuasion": 0,
+        "emotional_intelligence": 0,
+        "preparation": 0
+      }
+    }
+      
+    Conversation:
+    ${conversation} `,
   });
 
   return response.text.trim();

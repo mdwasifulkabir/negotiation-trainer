@@ -247,6 +247,7 @@ function SessionView({ sessionId, user }) {
       aiReply = await getNegotiationReply(lastMessages);
     } else {
       aiReply = await generateScenario(formValue);
+      scenarioGenerated = true;
     }
 
     await addDoc(messagesRef, {
