@@ -95,33 +95,29 @@ export async function generateFeedback(conversation) {
 
     Provide:
 
-    1. Overall performance summary
-    2. Strengths
-    3. Weaknesses
-    4. Actionable improvements
-    5. Skill ratings (0-10 scale) for:
-      - Confidence
-      - Anchoring
-      - Persuasion
-      - Emotional Intelligence
-      - Preparation
+    # Negotiation Review
 
-    Return the response in this exact JSON format:
+    ## Overall Summary
+    ...
 
-    {
-      "summary": "",
-      "strengths": [],
-      "weaknesses": [],
-      "improvements": [],
-      "ratings": {
-        "confidence": 0,
-        "anchoring": 0,
-        "persuasion": 0,
-        "emotional_intelligence": 0,
-        "preparation": 0
-      }
-    }
-      
+    ## Strengths
+    - ...
+
+    ## Weaknesses
+    - ...
+
+    ## Improvements
+    - ...
+
+    ## Skill Ratings (0-10)
+    - Confidence: X/10
+    - Anchoring: X/10
+    - Persuasion: X/10
+    - Emotional Intelligence: X/10
+    - Preparation: X/10
+
+    Keep the formatting in your response. Provide your response as clean markdown.
+
     Conversation:
     ${conversation} `,
   });
