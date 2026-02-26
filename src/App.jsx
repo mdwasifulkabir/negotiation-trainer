@@ -34,6 +34,7 @@ import {
   generateSessionTitle,
   getNegotiationReply,
   generateScenario,
+  generateFeedback,
 } from "./ai";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -257,6 +258,28 @@ function SessionView({ sessionId, user }) {
     });
   };
 
+  const handleEndNegotiation = async () => {
+    if (messages.length === 0) return;
+    setFormValue("");
+
+    const conversation = messages
+      .map((m) => `${m.role === "user" ? "User" : "Opponent"}: ${m.text}`)
+      .join("\n");
+
+    const feedback = await generateFeedback(conversation);
+
+    await addDoc(messagesRef, {
+      text: feedback,
+      createdAt: serverTimestamp(),
+      role: "model",
+      type: "feedback",
+    });
+
+    await updateDoc(doc(firestore, "sessions", sessionId), {
+      ended: true,
+    });
+  };
+
   return (
     <>
       <div className="message-window">
@@ -272,6 +295,9 @@ function SessionView({ sessionId, user }) {
             value={formValue}
             onChange={(e) => setFormValue(e.target.value)}
           />
+          <button className="end-session-btn" onClick={handleEndNegotiation}>
+            End
+          </button>
           <button type="submit">Send</button>
         </form>
       </div>
