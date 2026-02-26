@@ -219,7 +219,6 @@ function SessionView({ sessionId, user }) {
     });
 
     const isFirstMessage = messages.length === 0;
-    let scenarioGenerated = false;
 
     if (isFirstMessage) {
       //will setting form value to empty remove the ability to generate title?
@@ -244,11 +243,14 @@ function SessionView({ sessionId, user }) {
     setFormValue("");
 
     let aiReply = "";
-    if (scenarioGenerated) {
-      aiReply = await getNegotiationReply(lastMessages);
-    } else {
+    if (isFirstMessage) {
+      console.log(messages.length);
       aiReply = await generateScenario(formValue);
-      scenarioGenerated = true;
+      console.log("This is a scenario");
+    } else {
+      console.log(messages.length);
+      aiReply = await getNegotiationReply(lastMessages);
+      console.log("this is a negotiation reply");
     }
 
     await addDoc(messagesRef, {
