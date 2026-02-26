@@ -24,10 +24,6 @@ export async function getNegotiationReply(history) {
 
           Your job:
           1. Roleplay as the negotiation partner.
-          2. After replying, give coaching feedback:
-            - What the user did well
-            - What they should improve
-            - One actionable tip
 
           Keep replies realistic, concise, and helpful.
         `,
@@ -91,7 +87,7 @@ export async function generateFeedback(conversation) {
     contents: `
     You are an expert negotiation coach.
 
-    Analyze the following negotiation conversation.
+    Analyze the following negotiation conversation and provide feedback for the user's texts.
 
     Provide:
 
@@ -117,6 +113,9 @@ export async function generateFeedback(conversation) {
     - Preparation: X/10
 
     Keep the formatting in your response. Provide your response as clean markdown.
+    
+    Give the review based on the user's replies. The opponent is an AI roleplaying the conversation. Do not sugarcoat the review, feel free to give
+    a low score if the user put on a poor performance.
 
     Conversation:
     ${conversation} `,
