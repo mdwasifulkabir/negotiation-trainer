@@ -1,18 +1,88 @@
-# React + Vite
+# Negotiation Trainer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Negotiation Trainer is a web app built for **KitaHack 2026** that lets users practice realistic negotiation conversations with an AI opponent, then receive structured feedback on their performance.
 
-Currently, two official plugins are available:
+## Technical Architecture
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Frontend
 
-## React Compiler
+- **React + Vite** single-page application.
+- Main UI flow is implemented in `src/App.jsx`.
+- Markdown rendering for AI responses uses `react-markdown` + `remark-gfm`.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### AI Layer
 
-Note: This will impact Vite dev & build performances.
+- AI integration is isolated in `src/ai.js`.
+- Uses `@google/genai` with `gemini-2.5-flash` for:
+  - Negotiation replies (`getNegotiationReply`)
+  - Scenario generation (`generateScenario`)
+  - Session title generation (`generateSessionTitle`)
+  - Post-session coaching feedback (`generateFeedback`)
 
-## Expanding the ESLint configuration
+### Backend Services
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Firebase Authentication** (Google Sign-In) for user identity.
+- **Cloud Firestore** for persistent chat/session storage.
+- Data model:
+  - `sessions` collection (metadata per conversation)
+  - `sessions/{sessionId}/messages` subcollection (chat history + feedback entries)
+
+### Deployment/Tooling
+
+- Vite build pipeline for frontend bundling.
+- Firebase config/rules included for backend integration and access control (`firebase.json`, `firestore.rules`).
+
+## Implementation Details
+
+### Session Management
+
+- On new chat, a Firestore `session` document is created with `uid`, default title, and `createdAt`.
+- Sidebar loads user-specific sessions (`where("uid", "==", uid)`) and sorts by newest.
+- Deleting a session removes both subcollection messages and parent session document.
+
+### Messaging Flow
+
+- Chat messages are stored in Firestore with role metadata (`user` or `model`) and timestamps.
+- The app loads the latest message history for active sessions and auto-scrolls on update.
+- For the first user message:
+  - title is generated from user input
+  - scenario setup is generated before active negotiation begins
+- For subsequent messages:
+  - recent conversation context is sent to Gemini for in-character negotiation responses
+
+### Feedback Generation
+
+- Users can end a negotiation explicitly via the `End` action.
+- Conversation text is compiled and passed to AI coaching prompt.
+- A markdown-formatted feedback report is saved as a model message (`type: "feedback"`).
+
+### Prompt and Behavior Strategy
+
+- Negotiation prompts enforce role consistency, counteroffers, and gradual concessions.
+- Feedback prompts return a structured review with strengths, weaknesses, improvement points, and skill ratings.
+
+### Environment and Secrets
+
+- Gemini API key is read from `VITE_API_KEY` in environment variables (`.env`).
+
+## Challenges Faced
+
+Use this section as a template and replace with your own points:
+
+- Challenge 1:
+  - Problem: User can only have one chat session with AI
+  - Solution: Implemented `sessions` to allow for multiple chats with AI. Session sidebar was implemented to display and switch between different sessions.
+- Challenge 2:
+  - Problem: AI was readily making concessions, providing little to no resistance and counter-offers to user, leading to very unrealistic negotiations.
+  - Solution: Modify `getNegotiation` prompt to make the negotiation replies more realistic.
+
+## Future Roadmap
+
+- Voice mode for a more authentic negotiating experience
+- Different personality settings to AI:
+  - Competitive (hard bargainer)
+  - Collaborative
+  - Risk-averse
+  - Emotion-driven
+  - Data-driven
+- Different levels of difficulty
