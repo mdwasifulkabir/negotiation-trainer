@@ -195,6 +195,7 @@ function SessionView({ sessionId, user }) {
   const [messages] = useCollectionData(messagesQuery, { idField: "id" });
   const dummy = useRef(null);
   const [formValue, setFormValue] = useState("");
+  const isNewSession = (messages?.length ?? 0) === 0;
 
   useEffect(() => {
     if (!dummy.current) return;
@@ -218,7 +219,7 @@ function SessionView({ sessionId, user }) {
       text: formValue,
     });
 
-    const isFirstMessage = messages.length === 0;
+    const isFirstMessage = (messages?.length ?? 0) === 0;
 
     if (isFirstMessage) {
       //will setting form value to empty remove the ability to generate title?
@@ -257,7 +258,7 @@ function SessionView({ sessionId, user }) {
   };
 
   const handleEndNegotiation = async () => {
-    if (messages.length === 0) return;
+    if ((messages?.length ?? 0) === 0) return;
     setFormValue("");
 
     const conversation = messages
@@ -281,6 +282,9 @@ function SessionView({ sessionId, user }) {
   return (
     <>
       <div className="message-window">
+        {isNewSession && (
+          <div className="session-hint">Ask for a scenario to get started</div>
+        )}
         {messages?.map((msg) => (
           <ChatMessage key={msg.id} message={msg} currentUserId={user.uid} />
         ))}
