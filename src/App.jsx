@@ -244,13 +244,9 @@ function SessionView({ sessionId, user }) {
 
     let aiReply = "";
     if (isFirstMessage) {
-      console.log(messages.length);
       aiReply = await generateScenario(formValue);
-      console.log("This is a scenario");
     } else {
-      console.log(messages.length);
       aiReply = await getNegotiationReply(lastMessages);
-      console.log("this is a negotiation reply");
     }
 
     await addDoc(messagesRef, {
