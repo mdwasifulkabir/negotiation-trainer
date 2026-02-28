@@ -1,6 +1,7 @@
 # Negotiation Trainer
 
 Negotiation Trainer is a web app built for **KitaHack 2026** that lets users practice realistic negotiation conversations with an AI opponent, then receive structured feedback on their performance.
+It tackles SDG 4 (Quality Education), SDG 8 (Decent Work and Economic Growth), and SDG 10 (Reduced Inequalities). This app acts as a practice opponent for people to practice their negotiating skills and learn to be a better negotiator.
 
 ## Technical Architecture
 
@@ -86,3 +87,4 @@ Use this section as a template and replace with your own points:
   - Emotion-driven
   - Data-driven
 - Different levels of difficulty
+- Adding a Learn Mode
