@@ -71,6 +71,7 @@ header {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: #161a1e;
   align-items: baseline;
+  justify-content: space-around;
   text-align: left;
   color: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
